@@ -1,0 +1,7 @@
+{
+    "DB_USERNAME": "fitrasya",
+    "DB_PASSWORD": "P@ssw0rd",
+    "DB_PORT": "5432",
+    "DB_HOST": "localhost",
+    "DB_NAME": "db_renthall"
+}
