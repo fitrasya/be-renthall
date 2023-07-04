@@ -12,7 +12,17 @@ import (
 func GetPesanan(c echo.Context) error {
 	dbm := db.Manager().Debug()
 	pesanan := []model.PesananDetail{}
-	if err := dbm.Raw("select ps.*, gd.nama gedung_nama, pm.nama pemesan_nama, pm.kontak pemesan_kontak, rs.nama status_nama from pesanan ps left join pemesan pm on ps.pemesan_id = pm.id left join gedung gd on ps.gedung_id = gd.id left join ref_status rs on ps.status_id = rs.id order by ps.status_id").Scan(&pesanan).Error; err != nil {
+	if err := dbm.Raw("select ps.*, gd.nama gedung_nama, pm.nama pemesan_nama, pm.kontak pemesan_kontak, rs.nama status_nama from pesanan ps left join pemesan pm on ps.pemesan_id = pm.id left join gedung gd on ps.gedung_id = gd.id left join ref_status rs on ps.status_id = rs.id where ps.deleted_at is null order by ps.status_id").Scan(&pesanan).Error; err != nil {
+		return helper.ToResponse(c, err, nil)
+	}
+
+	return helper.ToResponse(c, nil, pesanan)
+}
+
+func GetPesananByIdUser(c echo.Context) error {
+	dbm := db.Manager().Debug()
+	pesanan := []model.PesananDetail{}
+	if err := dbm.Raw("select ps.*, gd.nama gedung_nama, pm.nama pemesan_nama, pm.kontak pemesan_kontak, rs.nama status_nama from pesanan ps left join pemesan pm on ps.pemesan_id = pm.id left join gedung gd on ps.gedung_id = gd.id left join ref_status rs on ps.status_id = rs.id where ps.deleted_at is null and pemesan_id = ? order by ps.status_id", c.Param("id")).Scan(&pesanan).Error; err != nil {
 		return helper.ToResponse(c, err, nil)
 	}
 
@@ -24,7 +34,7 @@ func GetPesananById(c echo.Context) error {
 	dbm := db.Manager().Debug()
 	pesanan := model.PesananDetail{}
 
-	if err := dbm.Raw("select ps.*, gd.nama gedung_nama, pm.nama pemesan_nama, pm.kontak pemesan_kontak, rs.nama status_nama from pesanan ps left join pemesan pm on ps.pemesan_id = pm.id left join gedung gd on ps.gedung_id = gd.id left join ref_status rs on ps.status_id = rs.id where ps.id = ?", id).Scan(&pesanan).Error; err != nil {
+	if err := dbm.Raw("select ps.*, gd.nama gedung_nama, pm.nama pemesan_nama, pm.kontak pemesan_kontak, rs.nama status_nama from pesanan ps left join pemesan pm on ps.pemesan_id = pm.id left join gedung gd on ps.gedung_id = gd.id left join ref_status rs on ps.status_id = rs.id where ps.deleted_at is null and ps.id = ?", id).Scan(&pesanan).Error; err != nil {
 		return helper.ToResponse(c, err, nil)
 	}
 

@@ -19,6 +19,7 @@ func ApiRoute(echo *echo.Echo) {
 	echo.DELETE("/gedung", api.DelGedung)
 
 	echo.GET("/pesanan", api.GetPesanan)
+	echo.GET("/pesanan/user/:id", api.GetPesananByIdUser)
 	echo.GET("/pesanan/:id", api.GetPesananById)
 	echo.POST("/pesanan", api.PostPesanan)
 	echo.PUT("/pesanan", api.PutPesanan)
